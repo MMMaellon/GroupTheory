@@ -1,4 +1,5 @@
-﻿
+﻿// #define MMM_GROUP_THEORY_ENABLE_UNIT_TESTS
+
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -33,18 +34,15 @@ namespace MMMaellon.GroupTheory
 
         [OdinSerialize, HideInInspector]
         DataList sets = new DataList();//list of list of group indexes
-
-        // #if UNITY_EDITOR
+#if MMM_GROUP_THEORY_ENABLE_UNIT_TESTS
         public void Start()
         {
             if (!Networking.LocalPlayer.isMaster)
             {
-                // RunUnitTests();
-                // SendCustomEventDelayedSeconds(nameof(RunUnitTests), 5);
-                // SendCustomEventDelayedSeconds(nameof(GetFrameTime), 6);
+                SendCustomEventDelayedSeconds(nameof(RunUnitTests), 5);
+                SendCustomEventDelayedSeconds(nameof(GetFrameTime), 6);
             }
-            // SendCustomEventDelayedSeconds(nameof(_PrintItemGroups), 20);
-            _PrintItemGroups();
+            SendCustomEventDelayedSeconds(nameof(_PrintItemGroups), 20);
         }
         float startFrameTime;
         float endFrameTime;
@@ -206,7 +204,7 @@ namespace MMMaellon.GroupTheory
                 Debug.LogWarning("item " + i + ": " + items[i].QueuedRequestCount() + " - " + _IntListToString(items[i].GetGroupIds()));
             }
         }
-        // #endif
+#endif
 
         void CreateSet(string setStr)
         {
