@@ -1,15 +1,15 @@
 {
-    "name": "com.mmmaellon.lower-case-name.editor",
+    "name": "com.mmmaellon.group-theory",
+    "rootNamespace": "",
     "references": [
         "VRC.SDK3",
-        "VRC.SDK3.Editor",
         "VRC.SDKBase",
-        "VRC.SDKBase.Editor",
-        "UdonSharp.Editor",
+        "VRC.Udon",
         "UdonSharp.Runtime",
-        "com.mmmaellon.lower-case-name",
-        "UnityEditor.UI",
-        "VRC.Udon.Editor"
+        "UdonSharp.Editor",
+        "Unity.TextMeshPro",
+        "com.mmmaellon.lightsync",
+        "VRC.Udon.Serialization.OdinSerializer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
