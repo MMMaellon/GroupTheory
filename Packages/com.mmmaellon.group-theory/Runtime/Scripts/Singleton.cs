@@ -34,6 +34,7 @@ namespace MMMaellon.GroupTheory
 
         [OdinSerialize, HideInInspector]
         DataList sets = new DataList();//list of list of group indexes
+
 #if MMM_GROUP_THEORY_ENABLE_UNIT_TESTS
         public void Start()
         {
@@ -196,6 +197,7 @@ namespace MMMaellon.GroupTheory
             Debug.LogWarning("1000 random adds and removes" + testTime + "ms");
         }
 
+#endif
         public void _PrintItemGroups()
         {
             Debug.LogWarning("Items:");
@@ -204,7 +206,6 @@ namespace MMMaellon.GroupTheory
                 Debug.LogWarning("item " + i + ": " + items[i].QueuedRequestCount() + " - " + _IntListToString(items[i].GetGroupIds()));
             }
         }
-#endif
 
         void CreateSet(string setStr)
         {
@@ -239,6 +240,231 @@ namespace MMMaellon.GroupTheory
 
                 }
             }
+        }
+
+        public DataList SubtractIntList(DataList a, DataList b)
+        {
+            DataList output = a.ShallowClone();
+            int aIndex = a.Count - 1;
+            int bIndex = b.Count - 1;
+            while (bIndex >= 0 && aIndex >= 0)
+            {
+                if (a[aIndex].Int == b[bIndex].Int)
+                {
+                    output.RemoveAt(aIndex);
+                    aIndex--;
+                    bIndex--;
+                }
+                else if (a[aIndex].Int < b[bIndex].Int)
+                {
+                    bIndex--;
+                }
+                else
+                {
+                    aIndex--;
+                }
+            }
+            return output;
+        }
+
+        public DataList SubtractItemList(DataList a, DataList b)
+        {
+            DataList output = a.ShallowClone();
+            int aIndex = a.Count - 1;
+            int bIndex = b.Count - 1;
+            while (bIndex >= 0 && aIndex >= 0)
+            {
+                if (((Item)a[aIndex].Reference).GetItemId() == ((Item)b[bIndex].Reference).GetItemId())
+                {
+                    output.RemoveAt(aIndex);
+                    aIndex--;
+                    bIndex--;
+                }
+                else if (((Item)a[aIndex].Reference).GetItemId() < ((Item)b[bIndex].Reference).GetItemId())
+                {
+                    bIndex--;
+                }
+                else
+                {
+                    aIndex--;
+                }
+            }
+            return output;
+        }
+
+        public DataList SubtractGroupList(DataList a, DataList b)
+        {
+            DataList output = a.ShallowClone();
+            int aIndex = a.Count - 1;
+            int bIndex = b.Count - 1;
+            while (bIndex >= 0 && aIndex >= 0)
+            {
+                if (((IGroup)a[aIndex].Reference).GetGroupId() == ((IGroup)b[bIndex].Reference).GetGroupId())
+                {
+                    output.RemoveAt(aIndex);
+                    aIndex--;
+                    bIndex--;
+                }
+                else if (((IGroup)a[aIndex].Reference).GetGroupId() < ((IGroup)b[bIndex].Reference).GetGroupId())
+                {
+                    bIndex--;
+                }
+                else
+                {
+                    aIndex--;
+                }
+            }
+            return output;
+        }
+
+        public DataList IntersectionIntList(DataList a, DataList b)
+        {
+            DataList output = new DataList();
+            int aIndex = a.Count - 1;
+            int bIndex = b.Count - 1;
+            while (bIndex >= 0 && aIndex >= 0)
+            {
+                if (a[aIndex].Int == b[bIndex].Int)
+                {
+                    output.Insert(0, a[aIndex]);
+                    aIndex--;
+                    bIndex--;
+                }
+                else if (a[aIndex].Int < b[bIndex].Int)
+                {
+                    bIndex--;
+                }
+                else
+                {
+                    aIndex--;
+                }
+            }
+            return output;
+        }
+
+        public DataList IntersectionItemList(DataList a, DataList b)
+        {
+            DataList output = new DataList();
+            int aIndex = a.Count - 1;
+            int bIndex = b.Count - 1;
+            while (bIndex >= 0 && aIndex >= 0)
+            {
+                if (((Item)a[aIndex].Reference).GetItemId() == ((Item)b[bIndex].Reference).GetItemId())
+                {
+                    output.Insert(0, a[aIndex]);
+                    aIndex--;
+                    bIndex--;
+                }
+                else if (((Item)a[aIndex].Reference).GetItemId() < ((Item)b[bIndex].Reference).GetItemId())
+                {
+                    bIndex--;
+                }
+                else
+                {
+                    aIndex--;
+                }
+            }
+            return output;
+        }
+
+        public DataList IntersectionGroupList(DataList a, DataList b)
+        {
+            DataList output = new DataList();
+            int aIndex = a.Count - 1;
+            int bIndex = b.Count - 1;
+            while (bIndex >= 0 && aIndex >= 0)
+            {
+                if (((IGroup)a[aIndex].Reference).GetGroupId() == ((IGroup)b[bIndex].Reference).GetGroupId())
+                {
+                    output.Insert(0, a[aIndex]);
+                    aIndex--;
+                    bIndex--;
+                }
+                else if (((IGroup)a[aIndex].Reference).GetGroupId() < ((IGroup)b[bIndex].Reference).GetGroupId())
+                {
+                    bIndex--;
+                }
+                else
+                {
+                    aIndex--;
+                }
+            }
+            return output;
+        }
+
+        public DataList UnionIntList(DataList a, DataList b)
+        {
+            DataList output = a.ShallowClone();
+            int insertIndex = output.Count - 1;
+            int bIndex = b.Count - 1;
+            while (bIndex >= 0)
+            {
+                if (insertIndex < 0)
+                {
+                    output.Insert(0, b[bIndex]);
+                    bIndex--;
+                }
+                else if (output[insertIndex].Int <= b[bIndex].Int)
+                {
+                    output.Insert(insertIndex + 1, b[bIndex]);
+                    bIndex--;
+                }
+                else
+                {
+                    insertIndex--;
+                }
+            }
+            return output;
+        }
+
+        public DataList UnionItemList(DataList a, DataList b)
+        {
+            DataList output = a.ShallowClone();
+            int insertIndex = output.Count - 1;
+            int bIndex = b.Count - 1;
+            while (bIndex >= 0)
+            {
+                if (insertIndex < 0)
+                {
+                    output.Insert(0, b[bIndex]);
+                    bIndex--;
+                }
+                else if (((Item)output[insertIndex].Reference).GetItemId() <= ((Item)b[bIndex].Reference).GetItemId())
+                {
+                    output.Insert(insertIndex + 1, b[bIndex]);
+                    bIndex--;
+                }
+                else
+                {
+                    insertIndex--;
+                }
+            }
+            return output;
+        }
+
+        public DataList UnionGroupList(DataList a, DataList b)
+        {
+            DataList output = a.ShallowClone();
+            int insertIndex = output.Count - 1;
+            int bIndex = b.Count - 1;
+            while (bIndex >= 0)
+            {
+                if (insertIndex < 0)
+                {
+                    output.Insert(0, b[bIndex]);
+                    bIndex--;
+                }
+                else if (((IGroup)output[insertIndex].Reference).GetGroupId() <= ((IGroup)b[bIndex].Reference).GetGroupId())
+                {
+                    output.Insert(insertIndex + 1, b[bIndex]);
+                    bIndex--;
+                }
+                else
+                {
+                    insertIndex--;
+                }
+            }
+            return output;
         }
 
         public string GroupListToString(DataList groupList)

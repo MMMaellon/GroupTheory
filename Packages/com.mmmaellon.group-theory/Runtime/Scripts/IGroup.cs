@@ -17,7 +17,11 @@ namespace MMMaellon.GroupTheory
         DataDictionary items = new DataDictionary();
 
         [SerializeField, ReadOnly]
-        Singleton singleton;
+        Singleton _singleton;
+        public Singleton singleton
+        {
+            get => _singleton;
+        }
         [SerializeField, ReadOnly]
         int groupId = -1001;//1 indexed
 
@@ -29,7 +33,7 @@ namespace MMMaellon.GroupTheory
         public void _Setup(int groupId, Singleton singleton)
         {
             this.groupId = groupId;
-            this.singleton = singleton;
+            this._singleton = singleton;
             setsIds.Clear();
             setsIds.Add(groupId, groupId.ToString());//The set with just this group
             items.Clear();
@@ -68,10 +72,6 @@ namespace MMMaellon.GroupTheory
 
         public bool HasItem(Item item)
         {
-            // if (item)
-            // {
-            //     return item.IsInGroup(this);
-            // }
             return item && items.ContainsKey(item.GetItemId());
         }
 

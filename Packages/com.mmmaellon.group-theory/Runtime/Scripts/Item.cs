@@ -20,7 +20,11 @@ namespace MMMaellon.GroupTheory
         [SerializeField, ReadOnly]
         int itemId = 0;
         [SerializeField, ReadOnly]
-        Singleton singleton;
+        Singleton _singleton;
+        public Singleton singleton
+        {
+            get => _singleton;
+        }
         [SerializeField, ReadOnly, UdonSynced, FieldChangeCallback(nameof(dataVec))]
         Vector4 _dataVec = Vector4.zero;
         [OdinSerialize, HideInInspector]
@@ -43,10 +47,10 @@ namespace MMMaellon.GroupTheory
                 return;
             }
             targetSetStr = _IntListToString(targetSet);
-            var targetSetIndex = singleton.GetSetIdByStr(targetSetStr);
-            if (targetSetIndex < 0 && player.IsOwner(singleton.gameObject))
+            var targetSetIndex = _singleton.GetSetIdByStr(targetSetStr);
+            if (targetSetIndex < 0 && player.IsOwner(_singleton.gameObject))
             {
-                targetSetIndex = singleton._OnNewSetRequest(targetSet);
+                targetSetIndex = _singleton._OnNewSetRequest(targetSet);
                 //guaranteed to be 0 or greater
             }
             if (targetSetIndex >= 0)
@@ -80,22 +84,22 @@ namespace MMMaellon.GroupTheory
         public void _MatchSyncIdToSingleton()
         {
             var setId = BitConverter.SingleToInt32Bits(_dataVec[0]);
-            if (setId >= singleton.GetSetCount())
+            if (setId >= _singleton.GetSetCount())
             {
                 //didn't sync newly created set yet
                 return;
             }
             prevSet = set.ShallowClone();
-            set = singleton.GetSetById(setId);
+            set = _singleton.GetSetById(setId);
             targetSet = set.ShallowClone();
             if (_dataVec[1] != 0)
             {
                 _ApplyChangeToIntList(targetSet, BitConverter.SingleToInt32Bits(_dataVec[1]));
                 _ApplyChangeToIntList(targetSet, BitConverter.SingleToInt32Bits(_dataVec[2]));
                 _ApplyChangeToIntList(targetSet, BitConverter.SingleToInt32Bits(_dataVec[3]));
-                if (player.IsOwner(singleton.gameObject))
+                if (player.IsOwner(_singleton.gameObject))
                 {
-                    singleton._OnNewSetRequest(targetSet);
+                    _singleton._OnNewSetRequest(targetSet);
                 }
             }
             _HandleAddsAndRemoves();
@@ -127,6 +131,16 @@ namespace MMMaellon.GroupTheory
         public DataList GetGroupIds()
         {
             return targetSet.ShallowClone();
+        }
+
+        public DataList GetGroups()
+        {
+            var groups = targetSet.ShallowClone();
+            for (int i = 0; i < groups.Count; i++)
+            {
+                groups[i] = singleton.GetGroupById(groups[i].Int);
+            }
+            return groups;
         }
 
         public bool HasActiveRequest()
@@ -301,14 +315,14 @@ namespace MMMaellon.GroupTheory
                         var nextGroupId = targetSet[nextIndex].Int;
                         if (prevGroupId < nextGroupId)
                         {
-                            var prevGroup = singleton.GetGroupById(prevGroupId);
+                            var prevGroup = _singleton.GetGroupById(prevGroupId);
                             //something was removed
                             prevGroup.OnRemoveItem(this);
                             prevIndex++;
                         }
                         else
                         {
-                            var nextGroup = singleton.GetGroupById(nextGroupId);
+                            var nextGroup = _singleton.GetGroupById(nextGroupId);
                             //something was added
                             nextGroup.OnAddItem(this);
                             nextIndex++;
@@ -318,14 +332,14 @@ namespace MMMaellon.GroupTheory
                 else if (nextIndex < targetSet.Count)
                 {
                     //reached end of previous set. All these ones are new now
-                    var nextGroup = singleton.GetGroupById(targetSet[nextIndex].Int);
+                    var nextGroup = _singleton.GetGroupById(targetSet[nextIndex].Int);
                     nextGroup.OnAddItem(this);
                     nextIndex++;
                 }
                 else if (prevIndex < prevSet.Count)
                 {
                     //reached end of new sets, all these are ones that were removed
-                    var prevGroup = singleton.GetGroupById(prevSet[prevIndex].Int);
+                    var prevGroup = _singleton.GetGroupById(prevSet[prevIndex].Int);
                     prevGroup.OnRemoveItem(this);
                     prevIndex++;
                 }
@@ -348,7 +362,7 @@ namespace MMMaellon.GroupTheory
             if (targetSetStr == newSetStr)
             {
                 _dataVec = new Vector4(BitConverter.Int32BitsToSingle(newSetIndex), 0, 0, 0);
-                set = singleton.GetSetById(newSetIndex);
+                set = _singleton.GetSetById(newSetIndex);
                 intermediateSetStr = "";
                 targetSetStr = "";
                 RequestSerialization();
@@ -356,7 +370,7 @@ namespace MMMaellon.GroupTheory
             else if (intermediateSetStr == newSetStr)
             {
                 _dataVec = new Vector4(BitConverter.Int32BitsToSingle(newSetIndex), 0, 0, 0);
-                set = singleton.GetSetById(newSetIndex);
+                set = _singleton.GetSetById(newSetIndex);
                 intermediateSetStr = "";
                 RequestSerialization();
             }
@@ -380,7 +394,7 @@ namespace MMMaellon.GroupTheory
                 intermediateSet = set.ShallowClone();
                 _ApplyChangesToGroupIdList(intermediateSet, sublist);
                 intermediateSetStr = _IntListToString(intermediateSet);
-                newSetIndex = singleton.GetSetIdByStr(intermediateSetStr);
+                newSetIndex = _singleton.GetSetIdByStr(intermediateSetStr);
                 if (newSetIndex < 0)
                 {
                     for (int j = 0; j < 3; j++)
@@ -425,9 +439,9 @@ namespace MMMaellon.GroupTheory
             {
                 return;
             }
-            if (player.IsOwner(singleton.gameObject))
+            if (player.IsOwner(_singleton.gameObject))
             {
-                _dataVec = new Vector4(BitConverter.Int32BitsToSingle(singleton._OnNewSetRequest(targetSet)), 0, 0, 0);
+                _dataVec = new Vector4(BitConverter.Int32BitsToSingle(_singleton._OnNewSetRequest(targetSet)), 0, 0, 0);
                 set = targetSet.ShallowClone();
                 intermediateSetStr = "";
                 targetSetStr = "";
@@ -473,14 +487,14 @@ namespace MMMaellon.GroupTheory
 
             for (int i = 0; i < startingGroupIds.Count; i++)
             {
-                singleton.GetGroupById(startingGroupIds[i].Int).OnAddItem(this);
+                _singleton.GetGroupById(startingGroupIds[i].Int).OnAddItem(this);
             }
 
             targetSetStr = _IntListToString(sortedStartingGroupIds);
-            var setId = singleton.GetSetIdByStr(targetSetStr);
+            var setId = _singleton.GetSetIdByStr(targetSetStr);
             if (setId <= 0)
             {
-                setId = singleton._OnNewSetRequest(sortedStartingGroupIds);
+                setId = _singleton._OnNewSetRequest(sortedStartingGroupIds);
             }
             set = sortedStartingGroupIds.ShallowClone();
             targetSet = set.ShallowClone();
@@ -491,7 +505,7 @@ namespace MMMaellon.GroupTheory
         public void _Setup(int newId, Singleton newSingleton)
         {
             itemId = newId;
-            singleton = newSingleton;
+            _singleton = newSingleton;
             SetupStartingGroups();
         }
 #endif

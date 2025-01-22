@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 3840
     height: 2077
   m_ShowMode: 4
-  m_Title: VRChat SDK
+  m_Title: Console
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -68,8 +68,8 @@ MonoBehaviour:
     y: 0
     width: 1278
     height: 2027
-  m_MinSize: {x: 517, y: 621}
-  m_MaxSize: {x: 517, y: 2021}
+  m_MinSize: {x: 516, y: 600}
+  m_MaxSize: {x: 516, y: 2000}
   m_ActualView: {fileID: 12}
   m_Panes:
   - {fileID: 19}
@@ -228,7 +228,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 48
+  controlID: 39
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -660,9 +660,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -6.212759, y: -6.127426, z: 12.573066}
+    m_Target: {x: -6.7527866, y: -5.2047825, z: 12.707366}
     speed: 2
-    m_Value: {x: -6.212759, y: -6.127426, z: 12.573066}
+    m_Value: {x: -6.7527866, y: -5.2047825, z: 12.707366}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -708,9 +708,9 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.20071678, y: 0.24449041, z: -0.05180713, w: -0.9472334}
+    m_Target: {x: -0.17743553, y: 0.25564313, z: -0.047790695, w: -0.9491454}
     speed: 2
-    m_Value: {x: -0.20071699, y: 0.24449068, z: -0.051807187, w: -0.9472344}
+    m_Value: {x: -0.17743574, y: 0.25564343, z: -0.04779075, w: -0.9491465}
   m_Size:
     m_Target: 10.40772
     speed: 2
@@ -884,7 +884,7 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: 114110
+  m_LastSelectedObjectID: 56218
 --- !u!114 &17
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -983,7 +983,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 102}
     m_SelectedIDs: 9e630000
     m_LastClickedID: 25502
-    m_ExpandedIDs: 00000000865d00004c6400004e64000050640000526400005464000056640000
+    m_ExpandedIDs: 00000000885d000056640000586400005a6400005c6400005e64000060640000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1011,7 +1011,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000865d00004c6400004e64000050640000526400005464000056640000
+    m_ExpandedIDs: 00000000885d000056640000586400005a6400005c6400005e64000060640000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1155,7 +1155,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: f250faff4651faff7051faff0658faff5a58faff8458faff045ffaff585ffaff5062faff826bfaffd66bfaffce6efaff1e78faff7278faff9c78faffa47ffafff87ffafff082faff328cfaff868cfaffb08cfaff3093faff8493faff7c96faffae9ffaff02a0faff2ca0faffa8a6faffc0a6faffb8a9faffbeb2faff12b3faff3cb3faffcab9faff1ebafaff16bdfaff50c6faffa4c6faff9cc9faffdcd2faff30d3faff28d6faff70dffaffc4dffaffc0e2faffd6ecfaff2aedfaff22f0faff5cf9faffb0f9faffa8fcfaffe205fbff3606fbff2e09fbff8e12fbffe212fbff0c13fbff9a19fbffee19fbffe61cfbff2026fbff7426fbff6c29fbffb836fbff0c37fbff043afbff3e43fbff9243fbff8a46fbff2850fbff7c50fbff7453fbff7c64fbffd064fbfffa64fbffd66bfbff2a6cfbff226ffbff6c78fbffc078fbffea78fbff787ffbffcc7ffbffc882fbff9490fbffe890fbff1291fbff9897fbffec97fbffe49afbff34a8fbff88a8fbffb2a8fbff94affbffe8affbffe0b2fbff30bcfbff84bcfbff7cbffbffb0cefbff04cffbfffcd1fbffccdbfbff20dcfbff18dffbff62e8fbffb6e8fbffaeebfbffe2f4fbff36f5fbff2ef8fbff042efcff582efcff5031fcffaedbffff02dcfffffadeffffd6faffff
+      m_ExpandedIDs: 2423ffff7823ffff7426ffff3a77ffff8e77ffff867affff7c8affffd08affffcc8dffffc097ffff1498ffff109bffff42acffff96acffff8eafffffceb8ffff22b9ffff4cb9ffffe2bfffff36c0ffff2ec3ffff76ccffffcaccffffc2cfffff18d9ffff6cd9ffff64dcffffb2e5ffff06e6fffffee8ffff44f2ffff98f2ffff90f5ffffcafaffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
