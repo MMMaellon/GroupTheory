@@ -10,10 +10,10 @@ namespace MMMaellon.GroupTheory
 {
     public abstract class IGroup : UdonSharpBehaviour
     {
-        [SerializeField, OdinSerialize, HideInInspector]
+        [OdinSerialize, HideInInspector]
         DataDictionary setsIds = new DataDictionary();
 
-        [SerializeField, OdinSerialize, HideInInspector]
+        [OdinSerialize, HideInInspector]
         DataDictionary items = new DataDictionary();
 
         [SerializeField, ReadOnly]
@@ -30,10 +30,18 @@ namespace MMMaellon.GroupTheory
             return groupId;
         }
 
+        public void _FixUnserializedItems()
+        {
+            foreach (var itemId in items.GetKeys().ToArray())
+            {
+                items[itemId] = singleton.GetItemById(itemId.Int);
+            }
+        }
+
         public void _Setup(int groupId, Singleton singleton)
         {
             this.groupId = groupId;
-            this._singleton = singleton;
+            _singleton = singleton;
             setsIds.Clear();
             setsIds.Add(groupId, groupId.ToString());//The set with just this group
             items.Clear();
@@ -75,6 +83,22 @@ namespace MMMaellon.GroupTheory
             return item && items.ContainsKey(item.GetItemId());
         }
 
+        public bool HasItemId(int itemId)
+        {
+            return items.ContainsKey(itemId);
+        }
+
+        public void PrintItemDict()
+        {
+            var keys = items.GetKeys().ToArray();
+            Debug.LogWarning("Dict:");
+            foreach (var key in keys)
+            {
+                Item item = (Item)items[key].Reference;
+                Debug.LogWarning(" " + key.Int + " - " + item);
+            }
+        }
+
         public bool IsPartOfSet(int setId)
         {
             return setsIds.ContainsKey(setId);
@@ -86,7 +110,7 @@ namespace MMMaellon.GroupTheory
 
         public void _OnAddItem(Item item)
         {
-            if (item && !items.ContainsKey(item.GetItemId()))
+            if (!items.ContainsKey(item.GetItemId()))
             {
                 items.Add(item.GetItemId(), item);
             }
@@ -94,8 +118,9 @@ namespace MMMaellon.GroupTheory
         }
         public void _OnRemoveItem(Item item)
         {
-            if (item && items.ContainsKey(item.GetItemId()))
+            if (items.ContainsKey(item.GetItemId()))
             {
+                Debug.LogWarning("should be removing");
                 items.Remove(item.GetItemId());
             }
             OnRemoveItem(item);

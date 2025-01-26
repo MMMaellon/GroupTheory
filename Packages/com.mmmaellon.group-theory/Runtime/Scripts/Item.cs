@@ -50,7 +50,7 @@ namespace MMMaellon.GroupTheory
             var targetSetIndex = _singleton.GetSetIdByStr(targetSetStr);
             if (targetSetIndex < 0 && player.IsOwner(_singleton.gameObject))
             {
-                targetSetIndex = _singleton._OnNewSetRequest(targetSet);
+                targetSetIndex = _singleton._OnNewSetRequest(targetSet, targetSetStr);
                 //guaranteed to be 0 or greater
             }
             if (targetSetIndex >= 0)
@@ -99,7 +99,7 @@ namespace MMMaellon.GroupTheory
                 _ApplyChangeToIntList(targetSet, BitConverter.SingleToInt32Bits(_dataVec[3]));
                 if (player.IsOwner(_singleton.gameObject))
                 {
-                    _singleton._OnNewSetRequest(targetSet);
+                    _singleton._OnNewSetRequest(targetSet, _IntListToString(targetSet));
                 }
             }
             _HandleAddsAndRemoves();
@@ -165,7 +165,7 @@ namespace MMMaellon.GroupTheory
             // }
             // return false;
 
-            return group && group.HasItem(this);
+            return group && group.HasItemId(itemId);
         }
 
         public int GetItemId()
@@ -215,7 +215,7 @@ namespace MMMaellon.GroupTheory
             {
                 Networking.SetOwner(player, gameObject);
             }
-            if (_RemoveFromIntList(targetSet, -group.GetGroupId()))
+            if (_RemoveFromIntList(targetSet, group.GetGroupId()))
             {
                 requests.Add(-group.GetGroupId());
                 group._OnRemoveItem(this);
@@ -441,7 +441,7 @@ namespace MMMaellon.GroupTheory
             }
             if (player.IsOwner(_singleton.gameObject))
             {
-                _dataVec = new Vector4(BitConverter.Int32BitsToSingle(_singleton._OnNewSetRequest(targetSet)), 0, 0, 0);
+                _dataVec = new Vector4(BitConverter.Int32BitsToSingle(_singleton._OnNewSetRequest(targetSet, _IntListToString(targetSet))), 0, 0, 0);
                 set = targetSet.ShallowClone();
                 intermediateSetStr = "";
                 targetSetStr = "";
@@ -487,15 +487,10 @@ namespace MMMaellon.GroupTheory
 
             for (int i = 0; i < startingGroupIds.Count; i++)
             {
-                _singleton.GetGroupById(startingGroupIds[i].Int).OnAddItem(this);
+                _singleton.GetGroupById(startingGroupIds[i].Int)._OnAddItem(this);
             }
 
-            targetSetStr = _IntListToString(sortedStartingGroupIds);
-            var setId = _singleton.GetSetIdByStr(targetSetStr);
-            if (setId <= 0)
-            {
-                setId = _singleton._OnNewSetRequest(sortedStartingGroupIds);
-            }
+            var setId = _singleton._OnNewSetRequest(sortedStartingGroupIds, _IntListToString(sortedStartingGroupIds));
             set = sortedStartingGroupIds.ShallowClone();
             targetSet = set.ShallowClone();
             intermediateSet = set.ShallowClone();

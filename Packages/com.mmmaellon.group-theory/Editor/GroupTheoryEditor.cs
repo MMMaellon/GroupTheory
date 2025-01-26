@@ -109,9 +109,11 @@ namespace MMMaellon.GroupTheory
                     GameObject singletonObject = new("GroupTheorySingleton");
                     singleton = UdonSharpComponentExtensions.AddUdonSharpComponent<Singleton>(singletonObject);
                 }
+                var allPrecompiledSets = Object.FindObjectsByType<PrecompiledSet>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 var allItems = Object.FindObjectsByType<Item>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
-                singleton.AutoSetup(allGroups, allItems);
+                singleton.AutoSetup(allGroups, allPrecompiledSets, allItems);
                 singleton.hideFlags |= HideFlags.NotEditable;
+                // singleton.hideFlags = HideFlags.None;
             }
             EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
             return true;

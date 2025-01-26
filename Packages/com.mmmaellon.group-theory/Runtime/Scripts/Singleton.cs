@@ -35,16 +35,24 @@ namespace MMMaellon.GroupTheory
         [OdinSerialize, HideInInspector]
         DataList sets = new DataList();//list of list of group indexes
 
-#if MMM_GROUP_THEORY_ENABLE_UNIT_TESTS
         public void Start()
         {
-            if (!Networking.LocalPlayer.isMaster)
+            //Because of some bullshit, any datatokens referencing scripts don't get serialized properly. This means we have to redo all of them. Great.
+            foreach (var group in groups)
             {
-                SendCustomEventDelayedSeconds(nameof(RunUnitTests), 5);
-                SendCustomEventDelayedSeconds(nameof(GetFrameTime), 6);
+                group._FixUnserializedItems();
             }
+#if MMM_GROUP_THEORY_ENABLE_UNIT_TESTS
+            if (Networking.LocalPlayer.IsOwner(gameObject))
+            {
+                SendCustomEventDelayedSeconds(nameof(RunUnitTests), 10);
+                SendCustomEventDelayedSeconds(nameof(GetFrameTime), 11);
+            }
+            groups[0].PrintItemDict();
             SendCustomEventDelayedSeconds(nameof(_PrintItemGroups), 20);
+#endif
         }
+#if MMM_GROUP_THEORY_ENABLE_UNIT_TESTS
         float startFrameTime;
         float endFrameTime;
         public void GetFrameTime()
@@ -178,18 +186,20 @@ namespace MMMaellon.GroupTheory
             watch.Stop();
             testTime = ((watch.ElapsedTicks * 1000L * 1000L) / System.Diagnostics.Stopwatch.Frequency) / 1000f;
             Debug.LogWarning("Fizz Buzz Time: " + testTime + "ms");
+            IGroup randomGroup;
+            Item randomItem;
             watch.Restart();
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100; i++)
             {
-                var randomGroup = groups[UnityEngine.Random.Range(0, groups.Length)];
-                var randomItem = items[UnityEngine.Random.Range(0, items.Length)];
+                randomGroup = groups[UnityEngine.Random.Range(0, groups.Length)];
+                randomItem = items[UnityEngine.Random.Range(0, items.Length)];
                 if (randomItem.IsInGroup(randomGroup))
                 {
                     randomItem.RemoveFromGroup(randomGroup);
                 }
                 else
                 {
-                    randomItem.AddToGroup(randomGroup);
+                    // randomItem.AddToGroup(randomGroup);
                 }
             }
             watch.Stop();
@@ -491,21 +501,20 @@ namespace MMMaellon.GroupTheory
             return string.Join(',', arr);
         }
 
-        public int _OnNewSetRequest(DataList newSet)
+        public int _OnNewSetRequest(DataList newSet, string newSetStr)
         {
-            var str = _IntListToString(newSet);
-            if (setsLookup.ContainsKey(str))
+            if (setsLookup.ContainsKey(newSetStr))
             {
-                return setsLookup[str].Int;
+                return setsLookup[newSetStr].Int;
             }
             var newSetStrs = new string[setStrs.Length + 1];
             var newSetId = setStrs.Length;
             Array.Copy(setStrs, newSetStrs, setStrs.Length);
-            newSetStrs[newSetId] = str;
+            newSetStrs[newSetId] = newSetStr;
             _setStrs = newSetStrs;
             RequestSerialization();
             sets.Add(newSet.ShallowClone());
-            setsLookup.Add(str, newSetId);
+            setsLookup.Add(newSetStr, newSetId);
             return newSetId;
         }
 
@@ -515,12 +524,15 @@ namespace MMMaellon.GroupTheory
             localPlayer = Networking.LocalPlayer;
         }
 
-        [SerializeField, ReadOnly]
+        [SerializeField]
         Item[] items = { };
-        [SerializeField, ReadOnly]
+        [SerializeField]
         IGroup[] groups = { };
         [OdinSerialize]
         DataDictionary setsLookup = new DataDictionary();//key is string, value is index in sets datalist
+
+        [SerializeField]
+        PrecompiledSet[] precompiledSets;
 
         public IGroup GetGroupById(int idValue)
         {
@@ -529,6 +541,15 @@ namespace MMMaellon.GroupTheory
                 return null;
             }
             return groups[idValue - 1];//group ids start at 1
+        }
+
+        public Item GetItemById(int idValue)
+        {
+            if (idValue < 0 || idValue >= items.Length)
+            {
+                return null;
+            }
+            return items[idValue];
         }
 
         public Item[] GetItems()
@@ -771,12 +792,13 @@ namespace MMMaellon.GroupTheory
 
 
 #if UNITY_EDITOR && !COMPILER_UDONSHARP
-        public void AutoSetup(IGroup[] newGroups, Item[] newItems)
+        public void AutoSetup(IGroup[] newGroups, PrecompiledSet[] newPrecompiledSets, Item[] newItems)
         {
             //because starting groups might have changed we can't quit early
             sets.Clear();
             setsLookup.Clear();
             groups = newGroups;
+            precompiledSets = newPrecompiledSets;
             items = newItems;
             _setStrs = new string[groups.Length + 1];
 
@@ -800,12 +822,23 @@ namespace MMMaellon.GroupTheory
                 new SerializedObject(groups[i]).Update();
                 PrefabUtility.RecordPrefabInstancePropertyModifications(groups[i]);
             }
+            for (int i = 0; i < precompiledSets.Length; i++)
+            {
+                precompiledSets[i]._Precompile(this);
+                //don't need to save anything in the precompiledsets
+            }
             for (int i = 0; i < items.Length; i++)
             {
                 items[i]._Setup(i, this);
                 new SerializedObject(items[i]).Update();
                 PrefabUtility.RecordPrefabInstancePropertyModifications(items[i]);
             }
+            //prints precompiled sets done
+            // for (int i = 0; i < setStrs.Length; i++)
+            // {
+            //     Debug.LogWarning("precompiled: " + setStrs[i]);
+            // }
+            // groups[0].PrintItemDict();
             new SerializedObject(this).Update();
             PrefabUtility.RecordPrefabInstancePropertyModifications(this);
         }
