@@ -199,7 +199,7 @@ namespace MMMaellon.GroupTheory
                 }
                 else
                 {
-                    // randomItem.AddToGroup(randomGroup);
+                    randomItem.AddToGroup(randomGroup);
                 }
             }
             watch.Stop();

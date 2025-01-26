@@ -120,7 +120,6 @@ namespace MMMaellon.GroupTheory
         {
             if (items.ContainsKey(item.GetItemId()))
             {
-                Debug.LogWarning("should be removing");
                 items.Remove(item.GetItemId());
             }
             OnRemoveItem(item);
