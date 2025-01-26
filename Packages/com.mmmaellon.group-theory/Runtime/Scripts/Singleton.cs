@@ -8,6 +8,7 @@ using VRC.SDK3.Data;
 using UnityEditor;
 using System;
 using VRC.Udon.Serialization.OdinSerializer;
+using UnityEngine.Rendering.VirtualTexturing;
 
 namespace MMMaellon.GroupTheory
 {
@@ -35,13 +36,17 @@ namespace MMMaellon.GroupTheory
         [OdinSerialize, HideInInspector]
         DataList sets = new DataList();//list of list of group indexes
 
+
+
         public void Start()
         {
+#if !UNITY_EDITOR && COMPILER_UDONSHARP
             //Because of some bullshit, any datatokens referencing scripts don't get serialized properly. This means we have to redo all of them. Great.
             foreach (var group in groups)
             {
                 group._FixUnserializedItems();
             }
+#endif
 #if MMM_GROUP_THEORY_ENABLE_UNIT_TESTS
             if (Networking.LocalPlayer.IsOwner(gameObject))
             {
@@ -52,6 +57,7 @@ namespace MMMaellon.GroupTheory
             SendCustomEventDelayedSeconds(nameof(_PrintItemGroups), 20);
 #endif
         }
+
 #if MMM_GROUP_THEORY_ENABLE_UNIT_TESTS
         float startFrameTime;
         float endFrameTime;
@@ -189,7 +195,7 @@ namespace MMMaellon.GroupTheory
             IGroup randomGroup;
             Item randomItem;
             watch.Restart();
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 randomGroup = groups[UnityEngine.Random.Range(0, groups.Length)];
                 randomItem = items[UnityEngine.Random.Range(0, items.Length)];
@@ -206,8 +212,8 @@ namespace MMMaellon.GroupTheory
             testTime = ((watch.ElapsedTicks * 1000L * 1000L) / System.Diagnostics.Stopwatch.Frequency) / 1000f;
             Debug.LogWarning("1000 random adds and removes" + testTime + "ms");
         }
-
 #endif
+
         public void _PrintItemGroups()
         {
             Debug.LogWarning("Items:");

@@ -199,8 +199,8 @@ namespace MMMaellon.GroupTheory
             }
             if (_AddToIntList(targetSet, group.GetGroupId()))
             {
-                group._OnAddItem(this);
                 requests.Add(group.GetGroupId());
+                group._OnAddItem(this, itemId);
                 RequestSerialization();
             }
         }
@@ -218,7 +218,7 @@ namespace MMMaellon.GroupTheory
             if (_RemoveFromIntList(targetSet, group.GetGroupId()))
             {
                 requests.Add(-group.GetGroupId());
-                group._OnRemoveItem(this);
+                group._OnRemoveItem(this, itemId);
                 RequestSerialization();
             }
         }
@@ -487,7 +487,7 @@ namespace MMMaellon.GroupTheory
 
             for (int i = 0; i < startingGroupIds.Count; i++)
             {
-                _singleton.GetGroupById(startingGroupIds[i].Int)._OnAddItem(this);
+                _singleton.GetGroupById(startingGroupIds[i].Int)._OnAddItem(this, itemId);
             }
 
             var setId = _singleton._OnNewSetRequest(sortedStartingGroupIds, _IntListToString(sortedStartingGroupIds));

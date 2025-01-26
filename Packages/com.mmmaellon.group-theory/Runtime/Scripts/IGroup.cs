@@ -14,7 +14,9 @@ namespace MMMaellon.GroupTheory
         DataDictionary setsIds = new DataDictionary();
 
         [OdinSerialize, HideInInspector]
-        DataDictionary items = new DataDictionary();
+        DataList itemIds = new DataList();
+        [OdinSerialize, HideInInspector]
+        DataList itemList = new DataList();
 
         [SerializeField, ReadOnly]
         Singleton _singleton;
@@ -32,9 +34,10 @@ namespace MMMaellon.GroupTheory
 
         public void _FixUnserializedItems()
         {
-            foreach (var itemId in items.GetKeys().ToArray())
+            itemList.Clear();
+            for (int i = 0; i < itemIds.Count; i++)
             {
-                items[itemId] = singleton.GetItemById(itemId.Int);
+                itemList.Add(singleton.GetItemById(itemIds[i].Int));
             }
         }
 
@@ -44,7 +47,7 @@ namespace MMMaellon.GroupTheory
             _singleton = singleton;
             setsIds.Clear();
             setsIds.Add(groupId, groupId.ToString());//The set with just this group
-            items.Clear();
+            itemList.Clear();
         }
 
         public DataList GetSetIds()
@@ -80,22 +83,26 @@ namespace MMMaellon.GroupTheory
 
         public bool HasItem(Item item)
         {
-            return item && items.ContainsKey(item.GetItemId());
+            return item && (itemIds.BinarySearch(item.GetItemId()) >= 0);
         }
 
         public bool HasItemId(int itemId)
         {
-            return items.ContainsKey(itemId);
+            return itemIds.BinarySearch(itemId) >= 0;
         }
 
         public void PrintItemDict()
         {
-            var keys = items.GetKeys().ToArray();
-            Debug.LogWarning("Dict:");
-            foreach (var key in keys)
+            Debug.LogWarning("ItemList:");
+            for (int i = 0; i < itemList.Count; i++)
             {
-                Item item = (Item)items[key].Reference;
-                Debug.LogWarning(" " + key.Int + " - " + item);
+                Item item = (Item)itemList[i].Reference;
+                Debug.LogWarning(" " + i + " - " + item);
+            }
+            Debug.LogWarning("ItemIds:");
+            for (int i = 0; i < itemIds.Count; i++)
+            {
+                Debug.LogWarning(" " + i + " - " + itemIds[i].Int);
             }
         }
 
@@ -108,21 +115,25 @@ namespace MMMaellon.GroupTheory
             setsIds.Add(newSetIndex, newSetStr);
         }
 
-        public void _OnAddItem(Item item)
+        public void _OnAddItem(Item item, int itemId)
         {
-            if (!items.ContainsKey(item.GetItemId()))
+            var index = itemIds.BinarySearch(itemId);
+            if (index < 0)
             {
-                items.Add(item.GetItemId(), item);
+                itemList.Insert(-1 - index, item);
+                itemIds.Insert(-1 - index, itemId);
+                OnAddItem(item);
             }
-            OnAddItem(item);
         }
-        public void _OnRemoveItem(Item item)
+        public void _OnRemoveItem(Item item, int itemId)
         {
-            if (items.ContainsKey(item.GetItemId()))
+            var index = itemIds.BinarySearch(itemId);
+            if (index >= 0)
             {
-                items.Remove(item.GetItemId());
+                itemList.RemoveAt(index);
+                itemIds.RemoveAt(index);
+                OnRemoveItem(item);
             }
-            OnRemoveItem(item);
         }
 
         public abstract void OnAddItem(Item item);
@@ -130,12 +141,12 @@ namespace MMMaellon.GroupTheory
 
         public DataList GetItemIds()
         {
-            return items.GetKeys();
+            return itemIds;
         }
 
         public DataList GetItems()
         {
-            return items.GetValues();
+            return itemList;
         }
     }
 }
