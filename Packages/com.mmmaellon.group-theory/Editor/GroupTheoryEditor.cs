@@ -91,7 +91,7 @@ namespace MMMaellon.GroupTheory
         public static bool AutoSetup()
         {
             Debug.Log("Running GroupTheory AutoSetup");
-            var allGroups = Object.FindObjectsByType<Group>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
+            var allGroups = Object.FindObjectsByType<IGroup>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
             if (allGroups.Length > 0)
             {
                 var allSingletons = Object.FindObjectsOfType<Singleton>(true);
