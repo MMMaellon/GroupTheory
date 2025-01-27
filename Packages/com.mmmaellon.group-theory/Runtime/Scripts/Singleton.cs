@@ -16,7 +16,7 @@ namespace MMMaellon.GroupTheory
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class Singleton : UdonSharpBehaviour
     {
-        [SerializeField, ReadOnly, UdonSynced, FieldChangeCallback(nameof(setStrs))]
+        [SerializeField, HideInInspector, UdonSynced, FieldChangeCallback(nameof(setStrs))]
         string[] _setStrs = { };
         string[] setStrs
         {
@@ -35,8 +35,6 @@ namespace MMMaellon.GroupTheory
 
         [OdinSerialize, HideInInspector]
         DataList sets = new DataList();//list of list of group indexes
-
-
 
         public void Start()
         {

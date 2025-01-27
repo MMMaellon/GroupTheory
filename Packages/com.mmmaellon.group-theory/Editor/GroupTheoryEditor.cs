@@ -13,20 +13,12 @@ namespace MMMaellon.GroupTheory
     public class ReadOnlyDrawer : PropertyDrawer
     {
 
-        bool show = true;
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            // show = EditorGUI.Foldout(position, true, "ADSF", true);
-            // show = EditorGUILayout.Foldout(show, "ASDF", true);
             GUI.enabled = false;
             if (property.propertyType == SerializedPropertyType.Vector4)
             {
-                // EditorGUI.IntField(position, 1);
                 property.vector4Value = EditorGUI.Vector4Field(position, property.name, property.vector4Value);
-                // EditorGUI.IntField(position, 1);
-                // EditorGUI.IntField(position, 1);
-                // EditorGUI.IntField(position, 1);
-                // EditorGUI.PropertyField(position, property, label, true);
             }
             else
             {
