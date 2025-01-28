@@ -201,8 +201,14 @@ namespace MMMaellon.GroupTheory
             {
                 requests.Add(group.GetGroupId());
                 group._OnAddItem(this, itemId);
+                OnAddToGroup(group);
                 RequestSerialization();
             }
+        }
+
+        public virtual void OnAddToGroup(IGroup group)
+        {
+
         }
 
         public void RemoveFromGroup(IGroup group)
@@ -219,9 +225,16 @@ namespace MMMaellon.GroupTheory
             {
                 requests.Add(-group.GetGroupId());
                 group._OnRemoveItem(this, itemId);
+                OnRemoveFromGroup(group);
                 RequestSerialization();
             }
         }
+
+        public virtual void OnRemoveFromGroup(IGroup group)
+        {
+
+        }
+
         string _IntListToString(DataList intList)
         {
             var arr = new string[intList.Count];
@@ -317,14 +330,16 @@ namespace MMMaellon.GroupTheory
                         {
                             var prevGroup = _singleton.GetGroupById(prevGroupId);
                             //something was removed
-                            prevGroup.OnRemoveItem(this);
+                            prevGroup._OnRemoveItem(this, itemId);
+                            OnRemoveFromGroup(prevGroup);
                             prevIndex++;
                         }
                         else
                         {
                             var nextGroup = _singleton.GetGroupById(nextGroupId);
                             //something was added
-                            nextGroup.OnAddItem(this);
+                            nextGroup._OnAddItem(this, itemId);
+                            OnAddToGroup(nextGroup);
                             nextIndex++;
                         }
                     }
@@ -333,14 +348,16 @@ namespace MMMaellon.GroupTheory
                 {
                     //reached end of previous set. All these ones are new now
                     var nextGroup = _singleton.GetGroupById(targetSet[nextIndex].Int);
-                    nextGroup.OnAddItem(this);
+                    nextGroup._OnAddItem(this, itemId);
+                    OnAddToGroup(nextGroup);
                     nextIndex++;
                 }
                 else if (prevIndex < prevSet.Count)
                 {
                     //reached end of new sets, all these are ones that were removed
                     var prevGroup = _singleton.GetGroupById(prevSet[prevIndex].Int);
-                    prevGroup.OnRemoveItem(this);
+                    prevGroup._OnRemoveItem(this, itemId);
+                    OnRemoveFromGroup(prevGroup);
                     prevIndex++;
                 }
                 else
@@ -485,9 +502,13 @@ namespace MMMaellon.GroupTheory
                 return;
             }
 
+            IGroup tempGroup;
             for (int i = 0; i < startingGroupIds.Count; i++)
             {
-                _singleton.GetGroupById(startingGroupIds[i].Int)._OnAddItem(this, itemId);
+
+                tempGroup = _singleton.GetGroupById(startingGroupIds[i].Int);
+                tempGroup._OnAddItem(this, itemId);
+                OnAddToGroup(tempGroup);
             }
 
             var setId = _singleton._OnNewSetRequest(sortedStartingGroupIds, _IntListToString(sortedStartingGroupIds));
