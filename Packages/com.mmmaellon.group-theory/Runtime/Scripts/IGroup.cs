@@ -11,12 +11,12 @@ namespace MMMaellon.GroupTheory
     public abstract class IGroup : UdonSharpBehaviour
     {
         [OdinSerialize, HideInInspector]
-        DataDictionary setsIds = new DataDictionary();
+        public DataDictionary setsIds = new DataDictionary();
 
         [OdinSerialize, HideInInspector]
-        DataList itemIds = new DataList();
+        public DataList itemIds = new DataList();
         [OdinSerialize, HideInInspector]
-        DataList itemList = new DataList();
+        public DataList itemList = new DataList();
 
         [SerializeField, ReadOnly]
         Singleton _singleton;

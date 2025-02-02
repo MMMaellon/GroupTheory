@@ -28,13 +28,13 @@ namespace MMMaellon.GroupTheory
         [SerializeField, ReadOnly, UdonSynced, FieldChangeCallback(nameof(dataVec))]
         Vector4 _dataVec = Vector4.zero;
         [OdinSerialize, HideInInspector]
-        DataList set = new DataList();//list of group ids
+        public DataList set = new DataList();//list of group ids
         [OdinSerialize, HideInInspector]
-        DataList prevSet = new DataList();
+        public DataList prevSet = new DataList();
         [OdinSerialize, HideInInspector]
-        DataList intermediateSet = new DataList();
+        public DataList intermediateSet = new DataList();
         [OdinSerialize, HideInInspector]
-        DataList targetSet = new DataList();
+        public DataList targetSet = new DataList();
         string intermediateSetStr = "";
         string targetSetStr = "";
 

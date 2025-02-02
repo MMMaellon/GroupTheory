@@ -33,8 +33,18 @@ namespace MMMaellon.GroupTheory
             }
         }
 
+        [SerializeField]
+        Item[] items = { };
+        [SerializeField]
+        IGroup[] groups = { };
+        [OdinSerialize]
+        public DataDictionary setsLookup = new DataDictionary();//key is string, value is index in sets datalist
+
+        [SerializeField]
+        PrecompiledSet[] precompiledSets;
+
         [OdinSerialize, HideInInspector]
-        DataList sets = new DataList();//list of list of group indexes
+        public DataList sets = new DataList();//list of list of group indexes
 
         public void Start()
         {
@@ -528,15 +538,6 @@ namespace MMMaellon.GroupTheory
             localPlayer = Networking.LocalPlayer;
         }
 
-        [SerializeField]
-        Item[] items = { };
-        [SerializeField]
-        IGroup[] groups = { };
-        [OdinSerialize]
-        DataDictionary setsLookup = new DataDictionary();//key is string, value is index in sets datalist
-
-        [SerializeField]
-        PrecompiledSet[] precompiledSets;
 
         public IGroup GetGroupById(int idValue)
         {
