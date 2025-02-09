@@ -193,10 +193,12 @@ namespace MMMaellon.GroupTheory
             {
                 return;
             }
+#if !UNITY_EDITOR && COMPILER_UDONSHARP
             if (!player.IsOwner(gameObject))
             {
                 Networking.SetOwner(player, gameObject);
             }
+#endif
             if (_AddToIntList(targetSet, group.GetGroupId()))
             {
                 requests.Add(group.GetGroupId());
@@ -217,10 +219,12 @@ namespace MMMaellon.GroupTheory
             {
                 return;
             }
+#if !UNITY_EDITOR && COMPILER_UDONSHARP
             if (!player.IsOwner(gameObject))
             {
                 Networking.SetOwner(player, gameObject);
             }
+#endif
             if (_RemoveFromIntList(targetSet, group.GetGroupId()))
             {
                 requests.Add(-group.GetGroupId());
