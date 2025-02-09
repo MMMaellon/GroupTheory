@@ -47,6 +47,7 @@ namespace MMMaellon.GroupTheory
             _singleton = singleton;
             setsIds.Clear();
             setsIds.Add(groupId, groupId.ToString());//The set with just this group
+            itemIds.Clear();
             itemList.Clear();
         }
 
