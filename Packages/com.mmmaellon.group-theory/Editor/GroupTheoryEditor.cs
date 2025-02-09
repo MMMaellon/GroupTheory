@@ -104,7 +104,7 @@ namespace MMMaellon.GroupTheory
                 var allPrecompiledSets = Object.FindObjectsByType<PrecompiledSet>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 var allItems = Object.FindObjectsByType<Item>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
                 singleton.AutoSetup(allGroups, allPrecompiledSets, allItems);
-                singleton.hideFlags |= HideFlags.NotEditable;
+                // singleton.hideFlags |= HideFlags.NotEditable;
                 // singleton.hideFlags = HideFlags.None;
             }
             EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
