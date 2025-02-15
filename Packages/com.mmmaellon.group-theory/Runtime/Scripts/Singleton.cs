@@ -52,7 +52,15 @@ namespace MMMaellon.GroupTheory
             //Apparently serializing a datalist of datalists crashes Unity, so we generate this at runtime
             foreach (var setStr in _setStrs)
             {
-                sets.Add(setsLookup[setStr]);
+                DataList newSet = new DataList();
+                foreach (var numStr in setStr.Split(','))
+                {
+                    if (int.TryParse(numStr, out int groupId))
+                    {
+                        newSet.Add(groupId);
+                    }
+                }
+                sets.Add(newSet);
             }
 #if !UNITY_EDITOR && COMPILER_UDONSHARP
             //Because of some bullshit, any datatokens referencing scripts don't get serialized properly. This means we have to redo all of them. Great. Only happens in game.
