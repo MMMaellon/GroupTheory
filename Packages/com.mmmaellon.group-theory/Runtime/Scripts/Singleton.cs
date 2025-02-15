@@ -43,13 +43,19 @@ namespace MMMaellon.GroupTheory
         [SerializeField]
         PrecompiledSet[] precompiledSets;
 
-        [OdinSerialize, HideInInspector]
+        //Serializing this crashes Unity apparently
+        [System.NonSerialized, HideInInspector]
         public DataList sets = new DataList();//list of list of group indexes
 
         public void Start()
         {
+            //Apparently serializing a datalist of datalists crashes Unity, so we generate this at runtime
+            foreach (var setStr in _setStrs)
+            {
+                sets.Add(setsLookup[setStr]);
+            }
 #if !UNITY_EDITOR && COMPILER_UDONSHARP
-            //Because of some bullshit, any datatokens referencing scripts don't get serialized properly. This means we have to redo all of them. Great.
+            //Because of some bullshit, any datatokens referencing scripts don't get serialized properly. This means we have to redo all of them. Great. Only happens in game.
             foreach (var group in groups)
             {
                 group._FixUnserializedItems();
@@ -809,16 +815,16 @@ namespace MMMaellon.GroupTheory
 
             //the null set
             _setStrs[0] = "";
-            var blankSet = new DataList();
-            sets.Add(blankSet.ShallowClone());
+            // var blankSet = new DataList();
+            // sets.Add(blankSet.ShallowClone());
             setsLookup.Add("", 0);
 
             for (int i = 1; i < _setStrs.Length; i++)
             {
                 _setStrs[i] = i.ToString();
-                var newList = new DataList();
-                newList.Add(i);
-                sets.Add(newList);
+                // var newList = new DataList();
+                // newList.Add(i);
+                // sets.Add(newList);
                 setsLookup.Add(i.ToString(), i);
             }
             for (int i = 0; i < groups.Length; i++)
